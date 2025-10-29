@@ -14,6 +14,7 @@ import lk.ijse.weatherbroadcastsys.dto.WeatherDTO;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -78,6 +79,8 @@ public class ClientController implements Initializable {
                     lblWindSpeed.setText(weatherDTO.getWindSpeed() + " km/h");
                 });
             }
+        } catch (SocketException se) {
+            System.out.println("Client disconnected");
         } catch (Exception e) {
             System.out.println("Error fetching weather data: " + e.getMessage());
         }
