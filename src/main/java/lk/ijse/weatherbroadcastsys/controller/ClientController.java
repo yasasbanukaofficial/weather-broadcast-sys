@@ -28,6 +28,7 @@ public class ClientController implements Initializable {
     public Label lblStatus;
 
     private Socket socket;
+    private ObjectInputStream ois;
     private WeatherDTO weatherDTO;
 
     @Override
@@ -45,7 +46,7 @@ public class ClientController implements Initializable {
         new Thread(() -> {
             try {
                 socket = new Socket(txtServerIp.getText(), Integer.parseInt(txtPort.getText()));
-                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                ois = new ObjectInputStream(socket.getInputStream());
                 Platform.runLater(() -> {
                     lblStatus.setStyle("-fx-text-fill: green");
                     lblStatus.setText("Connected!");
@@ -84,6 +85,9 @@ public class ClientController implements Initializable {
 
     public void disconnectServer() {
         try {
+            if (ois != null) {
+                ois.close();
+            }
             if (socket != null && !socket.isClosed()) {
                 socket.close();
             }
