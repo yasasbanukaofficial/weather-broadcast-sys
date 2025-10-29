@@ -1,5 +1,6 @@
 package lk.ijse.weatherbroadcastsys.controller;
 
+import com.github.prominence.openweathermap.api.OpenWeatherMapClient;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -8,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import lk.ijse.weatherbroadcastsys.config.Config;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -28,6 +30,7 @@ public class ClientController implements Initializable {
     private Socket socket;
     private DataOutputStream dOS;
     private DataInputStream dIS;
+    private OpenWeatherMapClient openWeatherMapClient = new OpenWeatherMapClient(Config.getAPI());
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
