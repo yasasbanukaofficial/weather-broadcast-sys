@@ -36,8 +36,6 @@ public class ClientController implements Initializable {
             Stage stage = (Stage) lblStatus.getScene().getWindow();
             stage.setOnCloseRequest(event -> {
                 disconnectServer();
-                Platform.exit();
-                System.exit(0);
             });
         });
     }
@@ -51,8 +49,16 @@ public class ClientController implements Initializable {
                 Platform.runLater(() -> {
                     lblStatus.setStyle("-fx-text-fill: green");
                     lblStatus.setText("Connected!");
-                    btnConnect.setStyle("-fx-background-color: red; -fx-text-fill: white");
+                    btnConnect.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-background-radius: 10px");
                     btnConnect.setText("Disconnect");
+                    btnConnect.setOnAction(event -> {
+                        disconnectServer();
+                        Platform.runLater(() -> {
+                            lblStatus.setText("Disconnected!");
+                            btnConnect.setStyle("-fx-background-color: green; -fx-text-fill: white");
+                            btnConnect.setText("Connect");
+                        });
+                    });
                 });
                 new Thread(() -> fetchWeatherData(socket, ois)).start();
             } catch (Exception e) {
@@ -70,7 +76,6 @@ public class ClientController implements Initializable {
                     lblHumidity.setText(weatherDTO.getHumidity() + " %");
                     lblWindSpeed.setText(weatherDTO.getWindSpeed() + " km/h");
                 });
-                System.out.println("Received weather data");
             }
         } catch (Exception e) {
             System.out.println("Error fetching weather data: " + e.getMessage());
@@ -82,6 +87,8 @@ public class ClientController implements Initializable {
             if (socket != null && !socket.isClosed()) {
                 socket.close();
             }
+            Platform.exit();
+            System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
         }
