@@ -38,8 +38,10 @@ public class ScheduledExecutorService {
                 updateWeather();
                 oos.writeObject(weatherDTO);
                 oos.flush();
+                System.out.println("Weather data sent to client");
+                Thread.sleep(10_000);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error sending weather data to client");
             throw new RuntimeException(e);
         }

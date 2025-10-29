@@ -46,14 +46,14 @@ public class ClientController {
 
     private void fetchWeatherData(Socket clientSocket, ObjectInputStream ois) {
         try {
-            if (clientSocket != null && !this.socket.isClosed()) {
+            while (clientSocket != null && !this.socket.isClosed()) {
                 weatherDTO = (WeatherDTO) ois.readObject();
-                System.out.println(weatherDTO.getWindSpeed());
                 Platform.runLater(() -> {
                     lblTemperature.setText(weatherDTO.getTemperature() + " ℃");
                     lblHumidity.setText(weatherDTO.getHumidity() + " %");
                     lblWindSpeed.setText(weatherDTO.getWindSpeed() + " km/h");
                 });
+                System.out.println("Received weather data");
             }
         } catch (Exception e) {
             e.printStackTrace();
