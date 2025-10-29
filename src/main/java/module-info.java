@@ -3,6 +3,8 @@ module lk.ijse.weatherbroadcastsys {
     requires javafx.fxml;
     requires javafx.graphics;
     requires openweathermap.api;
+    requires org.json;
+    requires static lombok;
 
 
     opens lk.ijse.weatherbroadcastsys.controller to javafx.fxml;
