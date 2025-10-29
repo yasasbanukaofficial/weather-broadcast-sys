@@ -40,7 +40,7 @@
             <Label style="-fx-text-fill: white; -fx-font-size: 18px;" text="Weather Trend" />
             <LineChart fx:id="lineChart" prefHeight="280" prefWidth="800" style="-fx-background-color: #0f172a; -fx-text-fill: white;">
                 <xAxis>
-                    <CategoryAxis label="Time" style="-fx-tick-label-fill: white; -fx-label-fill: white;" />
+                    <NumberAxis label="Time" style="-fx-tick-label-fill: white; -fx-label-fill: white;" />
                 </xAxis>
                 <yAxis>
                     <NumberAxis label="Value" style="-fx-tick-label-fill: white; -fx-label-fill: white;" />

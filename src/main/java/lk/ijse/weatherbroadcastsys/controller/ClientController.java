@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -25,16 +26,25 @@ public class ClientController implements Initializable {
     public Label lblTemperature;
     public Label lblHumidity;
     public Label lblWindSpeed;
-    public LineChart lineChart;
+    public LineChart<Number, Number> lineChart;
     public Label lblStatus;
 
     private Socket socket;
     private ObjectInputStream ois;
     private WeatherDTO weatherDTO;
 
+    private XYChart.Series<Number, Number> tempSeries = new XYChart.Series<>();
+    private XYChart.Series<Number, Number> humiditySeries = new XYChart.Series<>();
+    private XYChart.Series<Number, Number> windSpeedSeries = new XYChart.Series<>();
+    private int timeCounter = 0;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> {
+            tempSeries.setName("Temperature (°C)");
+            humiditySeries.setName("Humidity (%)");
+            windSpeedSeries.setName("Wind Speed (km/h)");
+            lineChart.getData().addAll(tempSeries, humiditySeries, windSpeedSeries);
             Stage stage = (Stage) lblStatus.getScene().getWindow();
             stage.setOnCloseRequest(event -> {
                 disconnectServer();
@@ -74,9 +84,25 @@ public class ClientController implements Initializable {
             while (clientSocket != null && !this.socket.isClosed()) {
                 weatherDTO = (WeatherDTO) ois.readObject();
                 Platform.runLater(() -> {
-                    lblTemperature.setText(weatherDTO.getTemperature() + " ℃");
-                    lblHumidity.setText(weatherDTO.getHumidity() + " %");
-                    lblWindSpeed.setText(weatherDTO.getWindSpeed() + " km/h");
+                    double temp = Double.parseDouble(weatherDTO.getTemperature());
+                    double humidity = Double.parseDouble(weatherDTO.getHumidity());
+                    double windSpeed = Double.parseDouble(weatherDTO.getWindSpeed());
+
+                    lblTemperature.setText(temp+ " ℃");
+                    lblHumidity.setText(humidity + " %");
+                    lblWindSpeed.setText(windSpeed + " km/h");
+
+                    timeCounter++;
+
+                    tempSeries.getData().add(new XYChart.Data<>(timeCounter, temp));
+                    humiditySeries.getData().add(new XYChart.Data<>(timeCounter, humidity));
+                    windSpeedSeries.getData().add(new XYChart.Data<>(timeCounter, windSpeed));
+
+                    if (tempSeries.getData().size() > 10 || humiditySeries.getData().size() > 10 || windSpeedSeries.getData().size() > 10) {
+                        tempSeries.getData().remove(0);
+                        humiditySeries.getData().remove(0);
+                        windSpeedSeries.getData().remove(0);
+                    }
                 });
             }
         } catch (SocketException se) {
